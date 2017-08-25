@@ -32,7 +32,7 @@ var server = http.createServer(function(request, response) {
     case "reload":
       let pth = "/home/blackcap/school/25.08/tst/";
 
-      fs.readFile(path.resolve(__dirname + "/js", pieces[2]), "utf8", function(err, data) {
+      fs.readFile(path.resolve(pth, "index.html"), "utf8", function(err, data) {
         if (err) { console.log(err); }
         broadcast("index.html:" + data);
       });

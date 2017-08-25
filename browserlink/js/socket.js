@@ -90,6 +90,7 @@
   socket.onopen = function(evt) {  };
   socket.onclose = function(evt) {  };
   socket.onmessage = function(evt) { 
+    console.log(evt.data);
     let ix   = evt.data.indexOf(':');
     let type = evt.data.substring(0, ix);
     let data = evt.data.substring(ix+1);
