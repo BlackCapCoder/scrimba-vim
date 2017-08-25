@@ -1,3 +1,3 @@
 Set WshShell = WScript.CreateObject("WScript.Shell")
-obj = WshShell.Run("node browserlink.js", 0)
+obj = WshShell.Run("node scimba.js", 0)
 

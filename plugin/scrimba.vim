@@ -1,9 +1,9 @@
-" File:        browserlink.vim
+" File:        scimba.vim
 " Version:     2.6.0
 " Description: Links VIM to your browser for live/responsive editing.
 " Maintainer:  Jonathan Warner <jaxbot@gmail.com> <http://github.com/jaxbot>
 " Homepage:    http://jaxbot.me/
-" Repository:  https://github.com/jaxbot/browserlink.vim
+" Repository:  https://github.com/jaxbot/scimba.vim
 " License:     Copyright (C) 2014 Jonathan Warner
 "              Released under the MIT license
 "        ======================================================================
@@ -19,18 +19,18 @@ endif
 
 let g:bl_state = 0
 
-command! -range -nargs=0 BLEvaluateSelection call browserlink#EvaluateSelection()
-command!        -nargs=0 BLEvaluateBuffer    call browserlink#EvaluateBuffer()
-command!        -nargs=0 BLEvaluateWord      call browserlink#EvaluateWord()
-command!        -nargs=1 BLEval              call browserlink#evaluateJS(<f-args>)
-command!        -nargs=0 BLReloadPage        call browserlink#sendCommand("reload/page")
-command!        -nargs=0 BLReloadCSS         call browserlink#sendCommand("reload/css")
-command!        -nargs=0 BLConsoleClear      call browserlink#sendCommand("clear")
-command!        -nargs=0 BLConsole           edit browserlink/console
-command!        -nargs=0 BLErrors            call browserlink#getErrors()
-command!        -nargs=0 BLClearErrors       call browserlink#clearErrors()
-command!        -nargs=0 BLTraceLine         call browserlink#traceLine()
-autocmd BufReadCmd browserlink/console* call browserlink#getConsole()
+command! -range -nargs=0 BLEvaluateSelection call scimba#EvaluateSelection()
+command!        -nargs=0 BLEvaluateBuffer    call scimba#EvaluateBuffer()
+command!        -nargs=0 BLEvaluateWord      call scimba#EvaluateWord()
+command!        -nargs=1 BLEval              call scimba#evaluateJS(<f-args>)
+command!        -nargs=0 BLReloadPage        call scimba#sendCommand("reload/page")
+command!        -nargs=0 BLReloadCSS         call scimba#sendCommand("reload/css")
+command!        -nargs=0 BLConsoleClear      call scimba#sendCommand("clear")
+command!        -nargs=0 BLConsole           edit scimba/console
+command!        -nargs=0 BLErrors            call scimba#getErrors()
+command!        -nargs=0 BLClearErrors       call scimba#clearErrors()
+command!        -nargs=0 BLTraceLine         call scimba#traceLine()
+autocmd BufReadCmd scimba/console* call scimba#getConsole()
 
 if !exists("g:bl_no_mappings")
   vmap <silent><Leader>be :BLEvaluateSelection<CR>
@@ -42,7 +42,7 @@ endif
 
 function! s:autoReload()
   if index(g:bl_pagefiletypes, &ft) >= 0
-    call browserlink#sendCommand("reload/page")
+    call scimba#sendCommand("reload/page")
   endif
 endfunction
 
