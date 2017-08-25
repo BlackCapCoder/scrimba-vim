@@ -5,7 +5,7 @@
  */
 
 (function () {
-    console.log("Hello");
+    console.log("Hello from scrimba-vim");
 
     function getEditor () {
       for (let x in window) {
@@ -90,22 +90,34 @@
   socket.onopen = function(evt) {  };
   socket.onclose = function(evt) {  };
   socket.onmessage = function(evt) { 
-    switch (evt.data) {
-      case "css":
-        reloadCSS();
-      break;
-      case "page":
-        if (visible()) {
-          window.location.reload();
-        } else {
-          pendingReload = true;
-        }
-      break;
+    let ix   = evt.data.indexOf(':');
+    let type = evt.data.substring(0, ix);
+    let data = evt.data.substring(ix+1);
+
+    switch (type) {
+      case "index.html":
+        editor.setValue(data);
+        break;
       default:
-        console.log(evt.data);
-        eval(evt.data);
-      break;
+        break;
     }
+
+    // switch (evt.data) {
+    //   case "css":
+    //     reloadCSS();
+    //   break;
+    //   case "page":
+    //     if (visible()) {
+    //       window.location.reload();
+    //     } else {
+    //       pendingReload = true;
+    //     }
+    //   break;
+    //   default:
+    //     console.log(evt.data);
+    //     eval(evt.data);
+    //   break;
+    // }
   };
   socket.onerror = function(evt) { console.log(evt); };
 
