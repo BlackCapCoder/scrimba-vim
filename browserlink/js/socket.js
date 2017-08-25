@@ -5,124 +5,162 @@
  */
 
 (function () {
+    console.log("Hello");
 
-	// Change port/address if needed 
-	var socket = new WebSocket("ws://127.0.0.1:9001/");
+    function getEditor () {
+      for (let x in window) {
+        if (typeof window[x] != 'object') continue;
+          for (let y in window[x]) {
+              if (y == "getValue")
+                  return window[x];
+          }
+      }
+    }
 
-	// Function to handle visible/non-visible. From http://stackoverflow.com/a/19519701
-	var visible = (function(){
-		// Determine the state and event keys.
-		var stateKey, eventKey, keys = {
-			hidden: "visibilitychange",
-			webkitHidden: "webkitvisibilitychange",
-			mozHidden: "mozvisibilitychange",
-			msHidden: "msvisibilitychange"
-		};
-		for (stateKey in keys) {
-			if (stateKey in document) {
-				eventKey = keys[stateKey];
-				break;
-			}
-		}
+    function saveFile (filename, data) {
+        var a = document.createElement("a");
+        a.href = "data:text," + data;
+        a.download = filename;
+        a.click();
+    }
 
-		// Build the function using this key.
-		vis = function(cb) {
-			// If one is given, register a callback.
-			if (cb) {
-				document.addEventListener(eventKey, function() {
-					cb(vis()); 
-				});
-			}
+    function onEditorCaught (e) {
+        let code = e.getValue();
+        // saveFile ('index.html', code);
+    }
 
-			// Return the current state.
-			return !document[stateKey];
-		}
-		return vis;
-	})();
+    // Find the editor. It is in the SE variable, but this might change
+    let intv = setInterval(function () {
+        let e = getEditor();
+        if (e === undefined) return;
+        clearInterval(intv);
+        editor = e;
+        console.log("Got it!");
+        onEditorCaught(e);
+    }, 100);
 
-	// Listen for window visible and non-visible.
-	var pendingReload = false;
-	visible(function(vis) {
-		if (vis && pendingReload) {
-			window.location.reload();
-			pendingReload = false;
-		}
-	});
 
-	socket.onopen = function(evt) {  };
-	socket.onclose = function(evt) {  };
-	socket.onmessage = function(evt) { 
-		switch (evt.data) {
-			case "css":
-				reloadCSS();
-			break;
-			case "page":
-				if (visible()) {
-					window.location.reload();
-				} else {
-					pendingReload = true;
-				}
-			break;
-			default:
-				console.log(evt.data);
-				eval(evt.data);
-			break;
-		}
-	};
-	socket.onerror = function(evt) { console.log(evt); };
 
-	var reloadCSS = function () {
-		var elements = document.getElementsByTagName("link");
 
-		var c = 0;
+  // ================ Mostly copied from browser-link vim: ===============
 
-		for (var i = 0; i < elements.length; i++) {
-			if (elements[c].rel == "stylesheet") {
-				var href = elements[i].getAttribute("data-href");
+  // Change port/address if needed 
+  var socket = new WebSocket("ws://127.0.0.1:9001/");
 
-				if (href == null) {
-					href = elements[c].href;
-					elements[c].setAttribute("data-href", href);
-				}
+  // Function to handle visible/non-visible. From http://stackoverflow.com/a/19519701
+  var visible = (function(){
+    // Determine the state and event keys.
+    var stateKey, eventKey, keys = {
+      hidden: "visibilitychange",
+      webkitHidden: "webkitvisibilitychange",
+      mozHidden: "mozvisibilitychange",
+      msHidden: "msvisibilitychange"
+    };
+    for (stateKey in keys) {
+      if (stateKey in document) {
+        eventKey = keys[stateKey];
+        break;
+      }
+    }
 
-				if (window.__BL_OVERRIDE_CACHE) {
-					var link = document.createElement("link");
-					link.href = href;
-					link.rel = "stylesheet";
-					document.head.appendChild(link);
+    // Build the function using this key.
+    vis = function(cb) {
+      // If one is given, register a callback.
+      if (cb) {
+        document.addEventListener(eventKey, function() {
+          cb(vis()); 
+        });
+      }
 
-					document.head.removeChild(elements[c]);
+      // Return the current state.
+      return !document[stateKey];
+    }
+    return vis;
+  })();
 
-					continue;
-				}
-				elements[i].href = href + ((href.indexOf("?") == -1) ? "?" : "&") + "c=" + (new Date).getTime();
-			}
-			c++;
-		}
-	}
+  // Listen for window visible and non-visible.
+  var pendingReload = false;
+  visible(function(vis) {
+    if (vis && pendingReload) {
+      window.location.reload();
+      pendingReload = false;
+    }
+  });
 
-	if (!window.__BL_NO_CONSOLE_OVERRIDE) {
-		var log = console.log;
-		console.log = function(str) {
-			log.call(console, str);
-			var err = (new Error).stack;
-			err = err.replace("Error", "").replace(/\s+at\s/g, '@').replace(/@/g, "\n@");
-			socket.send(JSON.stringify({
-				"type"       : "log",
-				"message"    : str,
-				"stacktrace" : err
-			}));
-		}
-	}
+  socket.onopen = function(evt) {  };
+  socket.onclose = function(evt) {  };
+  socket.onmessage = function(evt) { 
+    switch (evt.data) {
+      case "css":
+        reloadCSS();
+      break;
+      case "page":
+        if (visible()) {
+          window.location.reload();
+        } else {
+          pendingReload = true;
+        }
+      break;
+      default:
+        console.log(evt.data);
+        eval(evt.data);
+      break;
+    }
+  };
+  socket.onerror = function(evt) { console.log(evt); };
 
-	window.onerror = function(msg, url, lineNumber) {
-		socket.send(JSON.stringify({
-			"type"       : "error",
-			"message"    : msg,
-			"url"        : url,
-			"lineNumber" : lineNumber
-		}));
-		return false;
-	}
+  var reloadCSS = function () {
+    var elements = document.getElementsByTagName("link");
+
+    var c = 0;
+
+    for (var i = 0; i < elements.length; i++) {
+      if (elements[c].rel == "stylesheet") {
+        var href = elements[i].getAttribute("data-href");
+
+        if (href == null) {
+          href = elements[c].href;
+          elements[c].setAttribute("data-href", href);
+        }
+
+        if (window.__BL_OVERRIDE_CACHE) {
+          var link = document.createElement("link");
+          link.href = href;
+          link.rel = "stylesheet";
+          document.head.appendChild(link);
+
+          document.head.removeChild(elements[c]);
+
+          continue;
+        }
+        elements[i].href = href + ((href.indexOf("?") == -1) ? "?" : "&") + "c=" + (new Date).getTime();
+      }
+      c++;
+    }
+  }
+
+  if (!window.__BL_NO_CONSOLE_OVERRIDE) {
+    var log = console.log;
+    console.log = function(str) {
+      log.call(console, str);
+      var err = (new Error).stack;
+      err = err.replace("Error", "").replace(/\s+at\s/g, '@').replace(/@/g, "\n@");
+      socket.send(JSON.stringify({
+        "type"       : "log",
+        "message"    : str,
+        "stacktrace" : err
+      }));
+    }
+  }
+
+  window.onerror = function(msg, url, lineNumber) {
+    socket.send(JSON.stringify({
+      "type"       : "error",
+      "message"    : msg,
+      "url"        : url,
+      "lineNumber" : lineNumber
+    }));
+    return false;
+  }
 })();
 
