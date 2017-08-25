@@ -1,7 +1,6 @@
 # Scrimba Vim
 Control [Scrimba](https://scrimba.com/) with Vim!
 
-https://www.youtube.com/watch?v=EHFpQirzt18&feature=youtu.be
 
 This is currently a work in progress. You can see video of it in action [here](https://youtu.be/EHFpQirzt18)
 
