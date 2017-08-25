@@ -99,6 +99,10 @@
       case "index.html":
         editor.setValue(data);
         break;
+      case "index.css":
+        break;
+      case "index.js":
+        break;
       default:
         break;
     }

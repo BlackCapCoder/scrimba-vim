@@ -30,11 +30,17 @@ var server = http.createServer(function(request, response) {
 
   switch (pieces[1]) {
     case "reload":
+
+      let file = "";
+      if (pieces[2] == "page") file = "index.html";
+      if (pieces[2] == "css" ) file = "index.css";
+      if (pieces[2] == "js"  ) file = "index.js";
+
       let pth = "/home/blackcap/school/25.08/tst/";
 
-      fs.readFile(path.resolve(pth, "index.html"), "utf8", function(err, data) {
+      fs.readFile(path.resolve(pth, file), "utf8", function(err, data) {
         if (err) { console.log(err); }
-        broadcast("index.html:" + data);
+        broadcast(file + ":" + data);
       });
 
       // broadcast(pieces[2]);
@@ -123,6 +129,6 @@ function broadcast(data) {
   for (var i = 0; i < connections.length; i++) {
     connections[i].sendUTF(data);
   }
-  console.log("Broadcast: " + data);
+  // console.log("Broadcast: " + data);
 }
 

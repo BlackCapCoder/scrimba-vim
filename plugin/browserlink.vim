@@ -6,15 +6,15 @@
 " Repository:  https://github.com/jaxbot/browserlink.vim
 " License:     Copyright (C) 2014 Jonathan Warner
 "              Released under the MIT license
-"			   ======================================================================
+"        ======================================================================
 "
 
 if !exists("g:bl_serverpath")
-	let g:bl_serverpath = "http://127.0.0.1:9001"
+  let g:bl_serverpath = "http://127.0.0.1:9001"
 endif
 
 if !exists("g:bl_pagefiletypes")
-	let g:bl_pagefiletypes = ["html", "javascript", "php"]
+  let g:bl_pagefiletypes = ["html", "javascript", "php"]
 endif
 
 let g:bl_state = 0
@@ -33,29 +33,30 @@ command!        -nargs=0 BLTraceLine         call browserlink#traceLine()
 autocmd BufReadCmd browserlink/console* call browserlink#getConsole()
 
 if !exists("g:bl_no_mappings")
-	vmap <silent><Leader>be :BLEvaluateSelection<CR>
-	nmap <silent><Leader>be :BLEvaluateBuffer<CR>
-	nmap <silent><Leader>bf :BLEvaluateWord<CR>
-	nmap <silent><Leader>br :BLReloadPage<CR>
-	nmap <silent><Leader>bc :BLReloadCSS<CR>
+  vmap <silent><Leader>be :BLEvaluateSelection<CR>
+  nmap <silent><Leader>be :BLEvaluateBuffer<CR>
+  nmap <silent><Leader>bf :BLEvaluateWord<CR>
+  nmap <silent><Leader>br :BLReloadPage<CR>
+  nmap <silent><Leader>bc :BLReloadCSS<CR>
 endif
 
 function! s:autoReload()
-	if index(g:bl_pagefiletypes, &ft) >= 0
-		call browserlink#sendCommand("reload/page")
-	endif
+  if index(g:bl_pagefiletypes, &ft) >= 0
+    call browserlink#sendCommand("reload/page")
+  endif
 endfunction
 
 function! s:setupHandlers()
-	au BufWritePost * call s:autoReload()
-	au BufWritePost *.css :BLReloadCSS
+  au BufWritePost * call s:autoReload()
+  au BufWritePost *.css :BLReloadCSS
+  au CursorMoved * call browserlink#sendCursor()
 endfunction
 
 if !exists("g:bl_no_autoupdate")
-	call s:setupHandlers()
+  call s:setupHandlers()
 endif
 
 if !exists("g:bl_no_eager")
-	let g:bl_no_eager = 0
+  let g:bl_no_eager = 0
 endif
 
