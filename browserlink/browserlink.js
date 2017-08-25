@@ -29,6 +29,9 @@ var server = http.createServer(function(request, response) {
   var pieces = request.url.split("/");
 
   switch (pieces[1]) {
+    case "cursor":
+      broadcast(pieces[1] + ":" + pieces[2] + ":" + pieces[3]);
+      break;
     case "reload":
 
       let file = "";

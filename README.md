@@ -1,7 +1,9 @@
 # Scrimba Vim
-Control (Scrimba)[http://scrimba.com] with Vim!
+Control [Scrimba](https://scrimba.com/) with Vim!
 
-This is currently a work in progress.
+https://www.youtube.com/watch?v=EHFpQirzt18&feature=youtu.be
+
+This is currently a work in progress. You can see video of it in action [here](https://youtu.be/EHFpQirzt18)
 
 ### Installation
 

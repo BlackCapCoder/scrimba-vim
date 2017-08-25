@@ -96,6 +96,11 @@
     let data = evt.data.substring(ix+1);
 
     switch (type) {
+      case "cursor":
+        let pieces = data.split(':');
+        console.log(pieces);
+        editor.setPosition({column: Number(pieces[1]), lineNumber: Number(pieces[0])});
+        break;
       case "index.html":
         editor.setValue(data);
         break;
