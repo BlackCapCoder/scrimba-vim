@@ -54,7 +54,7 @@ function! s:setupHandlers()
   au CursorMoved *.css  call browserlink#sendCursor()
   au CursorMoved *.js   call browserlink#sendCursor()
 
-  au InsertLeave *.html :w<CR>:call s:autoReload()<CR>
+  au InsertLeave *.html w|call s:autoReload()
   au InsertLeave *.css  :w<CR>:call s:autoReload()<CR>
   au InsertLeave *js    :w<CR>:call s:autoReload()<CR>
 endfunction
