@@ -41,7 +41,7 @@ function! browserlink#startBrowserlink()
 		execute 'cd -'
 	else
 		execute 'cd' fnameescape(s:path . "/browserlink")
-		call system("node scrimba.js &")
+		call system("node browserlink.js &")
 		execute 'cd -'
 	endif
 endfunction

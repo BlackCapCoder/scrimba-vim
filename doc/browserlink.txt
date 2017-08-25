@@ -84,7 +84,7 @@ commands. For this there are two options:
 
 1. Add this script to your page(s)
 >
-  <script src='http://127.0.0.1:9002/js/socket.js'></script>
+  <script src='http://127.0.0.1:9001/js/socket.js'></script>
 <
 1. **OR** Use a GreaseMonkey script to inject the javascript into your
    project:
@@ -105,7 +105,7 @@ project):
   // ==/UserScript==
   
   var src = document.createElement("script");
-  src.src = "http://127.0.0.1:9002/js/socket.js";
+  src.src = "http://127.0.0.1:9001/js/socket.js";
   src.async = true;
   document.head.appendChild(src);
 <
@@ -189,7 +189,7 @@ If set, Browserlink won't map be, br, and bc commands.
 
 'g:bl_serverpath'
 
-Set if your server is not hosted on 127.0.0.1:9002. You will also need to
+Set if your server is not hosted on 127.0.0.1:9001. You will also need to
 change the socket.js file.
 
 'g:bl_urlpaths'
