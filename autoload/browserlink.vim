@@ -135,6 +135,6 @@ col  = vim.eval("col('.')")
 try:
   urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "cursor/" + line + "/" + col).read()
 except:
-  return;
+  pass
 EOF
 endfunction
