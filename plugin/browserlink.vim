@@ -47,12 +47,16 @@ function! s:autoReload()
 endfunction
 
 function! s:setupHandlers()
-  au BufWritePost,InsertLeave * call s:autoReload()
+  au BufWritePost * call s:autoReload()
   au BufWritePost *.css :BLReloadCSS
 
   au CursorMoved *.html call browserlink#sendCursor()
   au CursorMoved *.css  call browserlink#sendCursor()
   au CursorMoved *.js   call browserlink#sendCursor()
+
+  au InsertLeave *.html call s:autoReload()
+  au InsertLeave *.css  call s:autoReload()
+  au InsertLeave *js    call s:autoReload()
 endfunction
 
 if !exists("g:bl_no_autoupdate")
