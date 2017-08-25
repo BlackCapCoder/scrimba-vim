@@ -132,6 +132,9 @@ function! browserlink#sendCursor()
 python <<EOF
 line = vim.eval("line('.')")
 col  = vim.eval("col('.')")
-urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "cursor/" + line + "/" + col).read()
+try:
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "cursor/" + line + "/" + col).read()
+except:
+  return;
 EOF
 endfunction

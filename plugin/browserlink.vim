@@ -47,9 +47,12 @@ function! s:autoReload()
 endfunction
 
 function! s:setupHandlers()
-  au BufWritePost * call s:autoReload()
+  au BufWritePost,InsertLeave * call s:autoReload()
   au BufWritePost *.css :BLReloadCSS
-  au CursorMoved * call browserlink#sendCursor()
+
+  au CursorMoved *.html call browserlink#sendCursor()
+  au CursorMoved *.css  call browserlink#sendCursor()
+  au CursorMoved *.js   call browserlink#sendCursor()
 endfunction
 
 if !exists("g:bl_no_autoupdate")
@@ -59,4 +62,3 @@ endif
 if !exists("g:bl_no_eager")
   let g:bl_no_eager = 0
 endif
-
