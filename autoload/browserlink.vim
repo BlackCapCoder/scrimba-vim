@@ -84,7 +84,7 @@ endfunction
 
 function! browserlink#getErrors()
 python <<EOF
-data = urllib2.urlopen(vim.eval("g:bl_serverpath") + "/errors").readlines()
+data = urllib2.urlopen(vim.eval("g:bl_serverpath") + ":errors").readlines()
 vim.command("let errors = %s" % [e.strip() for e in data])
 EOF
   set errorformat+=%f:%l:%m
@@ -102,7 +102,7 @@ endfunction
 
 function! browserlink#clearErrors()
 python <<EOF
-urllib2.urlopen(vim.eval("g:bl_serverpath") + "/clearerrors")
+urllib2.urlopen(vim.eval("g:bl_serverpath") + ":clearerrors")
 EOF
 endfunction
 
@@ -133,7 +133,7 @@ python <<EOF
 line = vim.eval("line('.')")
 col  = vim.eval("col('.')")
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "cursor/" + line + "/" + col).read()
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + ":" + "cursor:" + line + ":" + col).read()
 except:
   pass
 EOF
@@ -143,7 +143,7 @@ function! browserlink#fileChanged()
 python <<EOF
 name = vim.eval("expand('%:t')")
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "fileChanged/" + name).read()
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + ":" + "fileChanged:" + name).read()
 except:
   pass
 EOF
@@ -151,8 +151,9 @@ endfunction
 
 function! scrimba#download()
 python <<EOF
+pth = vim.eval("expand('%:p:h')");
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "download").read()
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + ":" + "download" + ":" + name).read()
 except:
   pass
 EOF
