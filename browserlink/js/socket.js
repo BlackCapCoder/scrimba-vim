@@ -10,7 +10,7 @@
   function merge (a, b) {
     var l = a.length + b.length;
     var q = new Uint8Array(l);
-    console.log(a.length)
+    // console.log(a.length)
     q.set(a,0);
     q.set(b, a.length);
     return q;
@@ -30,10 +30,10 @@
     }
   }
 
-  replaceText = function replaceText (oldCols, oldLines, newCols, newLines, fileIndex, text) {
+  replaceText = function replaceText (oldCols, oldLines, newCols, newLines, fileIndex, text,sc=1,sl=1) {
     let lst = [ 250,147,fileIndex,145,146
               , 148  // multiple lines
-              , 1, 1 // from beginning of file
+              , sc, sl // from beginning of file
               , oldCols
               , oldLines-1
               ];
@@ -55,10 +55,6 @@
       lst.push(text.charCodeAt(i));
 
     lst.push(146);
-    if (l > 255) {
-      lst.push(1);
-      lst.push(205);
-    }
     lst.push(newLines);
     lst.push(newCols);
 
@@ -76,7 +72,61 @@
     replaceText(olc.cols, olc.lines, nlc.cols+1, nlc.lines, file, text);
   }
 
+  writeText = function writeText (txt, doInit=false, line=1, col=1, file=1) {
+    var lst = [];
+
+    if (doInit) {
+      lst = [ 252, 148, file, line, col
+            , 161, txt.charCodeAt(0)
+            // , 248, 146, 32, 2
+            ];
+    }
+
+    for (let i = doInit? 1:0; i < txt.length; i++) {
+      let chr = txt.charCodeAt(i);
+
+      if (chr == 10) {
+        lst.push(149);
+        lst.push(file);
+        lst.push(line);
+        lst.push(col+1);
+        line++; col = 0;
+      }
+
+      lst.push(161);
+      lst.push(chr);
+      col++;
+
+      if (chr == 10) {
+        lst.push(146);
+        lst.push(line);
+        lst.push(col);
+      }
+    }
+
+    pushBuff(lst);
+  }
+
+  setCur = function setCur (col, line, file=1) {
+    pushBuff([249, 147, file, line, col]);
+  }
+
+  // I can't be bothered
+  __replace = function __replace(text,file=1) {
+    let pack = text.substring(0,255);
+    let olc = countLineCol(SE.getValue());
+    let nlc = countLineCol(pack);
+    replaceText(olc.cols, olc.lines, nlc.cols+1, nlc.lines, file, pack);
+    text = text.slice(255);
+    // let flc = countLineCol(pack+text);
+    if (text.length > 0) {
+      writeText(text, true, nlc.lines, nlc.cols+1, lastFile);
+    }
+  }
+
+  lastFile = 1;
   setFile = function setFile (ix) {
+    lastFile = ix;
     pushBuff([255, 147, 251, 4, ix, 147, 251, 5, ix]);
   }
 
@@ -143,25 +193,28 @@
         let pieces = data.split(':');
         lastCur.lineNumber = Number(pieces[0])
         lastCur.column     = Number(pieces[1])
-        SE.setPosition(lastCur);
+        // SE.setPosition(lastCur);
+        setCur(lastCur.column, lastCur.lineNumber, lastFile);
         break;
       case "fileChanged":
         if (data == "index.html") setFile (1);
-        if (data == "index.css") setFile (2);
-        if (data == "index.js") setFile (3);
+        if (data == "index.css")  setFile (2);
+        if (data == "index.js")   setFile (3);
         break;
       case "index.html":
-        // SE.setValue(data);
-        _replace(data,1);
-        SE.setPosition(lastCur);
+        __replace(data,1); // SE.setValue(data);
+        setCur(lastCur.column, lastCur.lineNumber, 1); // SE.setPosition(lastCur);
+        lastFile = 1;
         break;
       case "index.css":
-        _replace(data,2);
-        SE.setPosition(lastCur);
+        __replace(data,2);
+        setCur(lastCur.column, lastCur.lineNumber, 2);
+        lastFile = 2;
         break;
       case "index.js":
-        _replace(data,3);
-        SE.setPosition(lastCur);
+        __replace(data,3);
+        setCur(lastCur.column, lastCur.lineNumber, 3);
+        lastFile = 3;
         break;
       default:
         break;
