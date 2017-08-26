@@ -22,6 +22,7 @@ var connections = [];
 var consoles = "";
 var errors   = [];
 var errorMultiplicities = {};
+var downPth = "";
 
 var server = http.createServer(function(request, response) {
   console.log("Requested: " + request.url);
@@ -36,8 +37,9 @@ var server = http.createServer(function(request, response) {
       broadcast(pieces[1] + ":" + pieces[2]);
       break;
     case "download":
-      let pth = request.url.substr(1);
-      pth = pth.substr(pth.indexOf('/')+1);
+      downPth = request.url.substr(1);
+      downPth = downPth.substr(downPth.indexOf('/')+1);
+      broadcast("download");
       break;
     case "reload":
 
@@ -119,19 +121,30 @@ wsServer.on('request', function(request) {
   connection.on('message', function(msg) {
     var content = JSON.parse(msg.utf8Data);
     console.log(content);
-    switch(content.type) {
-    case 'log':
-      consoles += content.message + "\n" + content.stacktrace + "\n\n";
-      break;
-    case 'error':
-      if (errorMultiplicities.hasOwnProperty(content)) {
-        errorMultiplicities[content] += 1;
-      } else {
-        errorMultiplicities[content] = 1;
-        errors.push(content);
-      }
-      break;
+    var obj = content; //JSON.parse(content);
+    switch (obj.msg) {
+      case "download":
+        delete obj.msg;
+        for (x in obj) {
+          fs.writeFile(downPth + "/" + x, obj[x], function(err) {
+              if(err) { return console.log(err); }
+          })
+        }
+        break;
     }
+    // switch(content.type) {
+    //   case 'log':
+    //     consoles += content.message + "\n" + content.stacktrace + "\n\n";
+    //     break;
+    //   case 'error':
+    //     if (errorMultiplicities.hasOwnProperty(content)) {
+    //       errorMultiplicities[content] += 1;
+    //     } else {
+    //       errorMultiplicities[content] = 1;
+    //       errors.push(content);
+    //     }
+    //     break;
+    // }
   });
 });
 

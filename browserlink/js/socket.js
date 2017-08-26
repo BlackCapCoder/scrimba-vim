@@ -7,7 +7,11 @@
 (function () {
   console.log("Hello from scrimba-vim");
 
-  function merge (a, b) {
+  getSel = function getSel () {
+    return Imba.TagManager._mounted[2]._preview._file._selState;
+  }
+
+  merge = function merge (a, b) {
     var l = a.length + b.length;
     var q = new Uint8Array(l);
     // console.log(a.length)
@@ -15,7 +19,6 @@
     q.set(b, a.length);
     return q;
   }
-  mrg = merge;
 
   pushBuff = function pushBuff (k) {
     let bu = STR.buffer()._buffer;
@@ -138,6 +141,28 @@
   // Change port/address if needed 
   var socket = new WebSocket("ws://127.0.0.1:9001/");
 
+  function nameFromIndex (ix) {
+    if (ix == 1) return "index.html";
+    if (ix == 2) return "index.css";
+    if (ix == 3) return "index.js";
+  }
+
+  var files = {};
+  function download (file=1) {
+    if (file<4) {
+      setFile(file);
+      setTimeout ( _ => {
+        files[nameFromIndex(file)] = SE.getValue();
+        download(file+1);
+      }, 50);
+    } else {
+      files['msg'] = 'download';
+      let payload = JSON.stringify(files);
+      socket.send(payload);
+      files = {};
+    }
+  }
+
   // Function to handle visible/non-visible. From http://stackoverflow.com/a/19519701
   var visible = (function(){
     // Determine the state and event keys.
@@ -187,6 +212,7 @@
     let ix   = evt.data.indexOf(':');
     let type = evt.data.substring(0, ix);
     let data = evt.data.substring(ix+1);
+    if (ix == -1) type = evt.data;
 
     switch (type) {
       case "cursor":
@@ -200,6 +226,9 @@
         if (data == "index.html") setFile (1);
         if (data == "index.css")  setFile (2);
         if (data == "index.js")   setFile (3);
+        break;
+      case "download":
+        download();
         break;
       case "index.html":
         __replace(data,1); // SE.setValue(data);

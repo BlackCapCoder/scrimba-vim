@@ -2,7 +2,12 @@
 Control [Scrimba](https://scrimba.com/) with Vim!
 
 
-This is currently a work in progress. You can see video of it in action [here](https://youtu.be/EHFpQirzt18)
+### Usage
+
+Create a new (or open an existing) project in Scrimba. Fire up Vim and run `:call browserlink#download()` to download all the files in the project to the current directory. Any changes you made to these files will be synced to Scrima.
+
+You can see video of it in action [here](https://youtu.be/DUdi2Ou4YRc)
+
 
 ### Installation
 
@@ -11,6 +16,7 @@ Install it with your favorite package manager, I recommend Dein:
     call dein#add('BlackCapCoder/scrimba-vim')
 
 You also need to add `userscript.js` to Tampermonkey in Chome.
+
 
 ### Footnotes
 Scrimba is actually surprisingly sophisticated; It has its own binary protocol for tracking changes to the document. It is easy enough to update the text in the editor, but it won't get saved on the server unless you express it in terms of changes to the document.
