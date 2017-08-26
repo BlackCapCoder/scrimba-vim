@@ -148,3 +148,12 @@ except:
   pass
 EOF
 endfunction
+
+function! scrimba#download()
+python <<EOF
+try:
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "download").read()
+except:
+  pass
+EOF
+endfunction
