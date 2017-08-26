@@ -26,7 +26,7 @@ var errorMultiplicities = {};
 var server = http.createServer(function(request, response) {
   console.log("Requested: " + request.url);
 
-  var pieces = request.url.split(":");
+  var pieces = request.url.split("/");
 
   switch (pieces[1]) {
     case "cursor":
