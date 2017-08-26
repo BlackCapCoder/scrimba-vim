@@ -153,7 +153,7 @@ function! browserlink#download()
 python <<EOF
 pth = vim.eval("expand('%:p:h')");
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "download" + "/" + name).read()
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "download" + "/" + pth).read()
 except:
   pass
 EOF

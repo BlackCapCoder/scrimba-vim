@@ -35,6 +35,10 @@ var server = http.createServer(function(request, response) {
     case "fileChanged":
       broadcast(pieces[1] + ":" + pieces[2]);
       break;
+    case "download":
+      let pth = request.url.substr(1);
+      pth = pth.substr(pth.indexOf('/')+1);
+      break;
     case "reload":
 
       let file = "";
