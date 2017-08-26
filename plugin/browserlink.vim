@@ -59,7 +59,7 @@ function! s:setupHandlers()
   au BufRead index.js call browserlink#fileChanged()
 
   au InsertLeave index.html w|call s:autoReload()
-  au InsertLeave index.css w|call s:autoReload()
+  au InsertLeave index.css w|:BLReloadCSS
   au InsertLeave index.js w|call s:autoReload()
 endfunction
 
