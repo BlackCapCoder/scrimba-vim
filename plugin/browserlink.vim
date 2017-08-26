@@ -55,8 +55,8 @@ function! s:setupHandlers()
   au CursorMoved *.js   call browserlink#sendCursor()
 
   au InsertLeave *.html w|call s:autoReload()
-  au InsertLeave *.css  :w<CR>:call s:autoReload()<CR>
-  au InsertLeave *js    :w<CR>:call s:autoReload()<CR>
+  au InsertLeave *.css  w|call s:autoReload()
+  au InsertLeave *.js   w|call s:autoReload()
 endfunction
 
 if !exists("g:bl_no_autoupdate")

@@ -5,79 +5,39 @@
  */
 
 (function () {
-  console.log("Hello from scrimba-vim");
+    console.log("Hello from scrimba-vim");
 
-  function merge (a, b) {
-    var l = a.length + b.length;
-    var q = new Uint8Array(l);
-    console.log(a.length)
-    q.set(a,0);
-    q.set(b, a.length);
-    return q;
-  }
-
-  function pushBuff (k) {
-    let bu = STR.buffer()._buffer;
-    STR.buffer()._buffer = merge(bu, k);
-  }
-
-
-  function selectAll (cols, lines) {
-    if (lines == 1 && false) {
-      pushBuff ([249, 148, 1, 1, 1, cols]);
-    } else {
-      pushBuff ([249, 149, 1, 1, 1, cols, lines-1]);
-    }
-  }
-  selAll = selectAll;
-
-  function replaceText (oldCols, oldLines, newCols, newLines, text) {
-    let lst = [ 250,147,1,145,146
-              , 148 // multiple lines
-              , 1, 1 // from beginning of file
-              , oldCols
-              , oldLines-1
-              ];
-
-    let l = text.length;
-    if (l < 32) {
-      lst.push(160 + text.length);
-    } else if (l < 256) {
-      lst.push(217);
-      lst.push(text.length);
-    } else {
-      lst.push(218);
-      lst.push(Math.ceil(l / 256));
-      lst.push(l % 256)
+    function getEditor () {
+      for (let x in window) {
+        if (typeof window[x] != 'object') continue;
+          for (let y in window[x]) {
+              if (y == "getValue")
+                  return window[x];
+          }
+      }
     }
 
-    // Write payload
-    for (let i = 0; i < text.length; i++)
-      lst.push(text.charCodeAt(i));
-
-    lst.push(146);
-    if (l > 255) {
-      lst.push(1);
-      lst.push(205);
+    function saveFile (filename, data) {
+        var a = document.createElement("a");
+        a.href = "data:text," + data;
+        a.download = filename;
+        a.click();
     }
-    lst.push(newLines);
-    lst.push(newCols);
 
-    pushBuff(lst);
-  }
-  repText = replaceText;
+    function onEditorCaught (e) {
+        let code = e.getValue();
+        // saveFile ('index.html', code);
+    }
 
-  function countLineCol (txt) {
-    let lns = txt.split('\n');
-    return {lines: lns.length, cols: lns[lns.length-1].length};
-  }
-
-  function _replace(text) {
-    let olc = countLineCol(SE.getValue());
-    let nlc = countLineCol(text);
-    replaceText(olc.cols, olc.lines, nlc.cols+1, nlc.lines, text);
-  }
-  rep = _replace;
+    // Find the editor. It is in the SE variable, but this might change
+    let intv = setInterval(function () {
+        let e = getEditor();
+        if (e === undefined) return;
+        clearInterval(intv);
+        editor = e;
+        console.log("Got it!");
+        onEditorCaught(e);
+    }, 100);
 
 
 
@@ -127,7 +87,7 @@
     }
   });
 
-  var lastCur = {column: 0, lineNumber: 0};
+  var lastCur = 
 
   socket.onopen = function(evt) {  };
   socket.onclose = function(evt) {  };
@@ -140,15 +100,10 @@
     switch (type) {
       case "cursor":
         let pieces = data.split(':');
-        lastCur.lineNumber = Number(pieces[0])
-        lastCur.column     = Number(pieces[1])
-        SE.setPosition(lastCur);
+        editor.setPosition({column: Number(pieces[1]), lineNumber: Number(pieces[0])});
         break;
       case "index.html":
-        // SE.setValue(data);
-        _replace(data);
-        SE.setPosition(lastCur);
-
+        editor.setValue(data);
         break;
       case "index.css":
         break;
@@ -157,6 +112,23 @@
       default:
         break;
     }
+
+    // switch (evt.data) {
+    //   case "css":
+    //     reloadCSS();
+    //   break;
+    //   case "page":
+    //     if (visible()) {
+    //       window.location.reload();
+    //     } else {
+    //       pendingReload = true;
+    //     }
+    //   break;
+    //   default:
+    //     console.log(evt.data);
+    //     eval(evt.data);
+    //   break;
+    // }
   };
   socket.onerror = function(evt) { console.log(evt); };
 
@@ -190,19 +162,19 @@
     }
   }
 
-  // if (!window.__BL_NO_CONSOLE_OVERRIDE) {
-  //   var log = console.log;
-  //   console.log = function(str) {
-  //     log.call(console, str);
-  //     var err = (new Error).stack;
-  //     err = err.replace("Error", "").replace(/\s+at\s/g, '@').replace(/@/g, "\n@");
-  //     socket.send(JSON.stringify({
-  //       "type"       : "log",
-  //       "message"    : str,
-  //       "stacktrace" : err
-  //     }));
-  //   }
-  // }
+  if (!window.__BL_NO_CONSOLE_OVERRIDE) {
+    var log = console.log;
+    console.log = function(str) {
+      log.call(console, str);
+      var err = (new Error).stack;
+      err = err.replace("Error", "").replace(/\s+at\s/g, '@').replace(/@/g, "\n@");
+      socket.send(JSON.stringify({
+        "type"       : "log",
+        "message"    : str,
+        "stacktrace" : err
+      }));
+    }
+  }
 
   window.onerror = function(msg, url, lineNumber) {
     socket.send(JSON.stringify({
