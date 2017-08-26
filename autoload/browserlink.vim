@@ -149,7 +149,7 @@ except:
 EOF
 endfunction
 
-function! scrimba#download()
+function! browserlink#download()
 python <<EOF
 pth = vim.eval("expand('%:p:h')");
 try:
