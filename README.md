@@ -12,3 +12,7 @@ Install it with your favorite package manager, I recommend Dein:
 
 You also need to add `userscript.js` to Tampermonkey in Chome.
 
+### Footnotes
+Scrimba is actually surprisingly sophisticated; It has its own binary protocol for tracking changes to the document. It is easy enough to update the text in the editor, but it won't get saved on the server unless you express it in terms of changes to the document.
+
+Currently I have just reverse engineered the parts for `select all` and `paste`.
