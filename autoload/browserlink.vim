@@ -138,3 +138,13 @@ except:
   pass
 EOF
 endfunction
+
+function! browserlink#fileChanged()
+python <<EOF
+name = vim.eval("expand('%:t')")
+try:
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "fileChanged/" + name).read()
+except:
+  pass
+EOF
+endfunction

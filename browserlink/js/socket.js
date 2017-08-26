@@ -15,25 +15,24 @@
     q.set(b, a.length);
     return q;
   }
+  mrg = merge;
 
-  function pushBuff (k) {
+  pushBuff = function pushBuff (k) {
     let bu = STR.buffer()._buffer;
     STR.buffer()._buffer = merge(bu, k);
   }
 
-
-  function selectAll (cols, lines) {
+  selectAll = function selectAll (cols, lines) {
     if (lines == 1 && false) {
       pushBuff ([249, 148, 1, 1, 1, cols]);
     } else {
       pushBuff ([249, 149, 1, 1, 1, cols, lines-1]);
     }
   }
-  selAll = selectAll;
 
-  function replaceText (oldCols, oldLines, newCols, newLines, text) {
-    let lst = [ 250,147,1,145,146
-              , 148 // multiple lines
+  replaceText = function replaceText (oldCols, oldLines, newCols, newLines, fileIndex, text) {
+    let lst = [ 250,147,fileIndex,145,146
+              , 148  // multiple lines
               , 1, 1 // from beginning of file
               , oldCols
               , oldLines-1
@@ -65,19 +64,21 @@
 
     pushBuff(lst);
   }
-  repText = replaceText;
 
   function countLineCol (txt) {
     let lns = txt.split('\n');
     return {lines: lns.length, cols: lns[lns.length-1].length};
   }
 
-  function _replace(text) {
+  _replace = function _replace(text, file=1) {
     let olc = countLineCol(SE.getValue());
     let nlc = countLineCol(text);
-    replaceText(olc.cols, olc.lines, nlc.cols+1, nlc.lines, text);
+    replaceText(olc.cols, olc.lines, nlc.cols+1, nlc.lines, file, text);
   }
-  rep = _replace;
+
+  setFile = function setFile (ix) {
+    pushBuff([255, 147, 251, 4, ix, 147, 251, 5, ix]);
+  }
 
 
 
@@ -144,15 +145,23 @@
         lastCur.column     = Number(pieces[1])
         SE.setPosition(lastCur);
         break;
+      case "fileChanged":
+        if (data == "index.html") setFile (1);
+        if (data == "index.css") setFile (2);
+        if (data == "index.js") setFile (3);
+        break;
       case "index.html":
         // SE.setValue(data);
-        _replace(data);
+        _replace(data,1);
         SE.setPosition(lastCur);
-
         break;
       case "index.css":
+        _replace(data,2);
+        SE.setPosition(lastCur);
         break;
       case "index.js":
+        _replace(data,3);
+        SE.setPosition(lastCur);
         break;
       default:
         break;

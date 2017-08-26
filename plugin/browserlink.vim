@@ -48,15 +48,19 @@ endfunction
 
 function! s:setupHandlers()
   au BufWritePost * call s:autoReload()
-  au BufWritePost *.css :BLReloadCSS
+  au BufWritePost index.css :BLReloadCSS
 
-  au CursorMoved *.html call browserlink#sendCursor()
-  au CursorMoved *.css  call browserlink#sendCursor()
-  au CursorMoved *.js   call browserlink#sendCursor()
+  au CursorMoved index.html call browserlink#sendCursor()
+  au CursorMoved index.css call browserlink#sendCursor()
+  au CursorMoved index.js call browserlink#sendCursor()
 
-  au InsertLeave *.html w|call s:autoReload()
-  au InsertLeave *.css  w|call s:autoReload()
-  au InsertLeave *.js   w|call s:autoReload()
+  au BufRead index.html call browserlink#fileChanged()
+  au BufRead index.css call browserlink#fileChanged()
+  au BufRead index.js call browserlink#fileChanged()
+
+  au InsertLeave index.html w|call s:autoReload()
+  au InsertLeave index.css w|call s:autoReload()
+  au InsertLeave index.js w|call s:autoReload()
 endfunction
 
 if !exists("g:bl_no_autoupdate")

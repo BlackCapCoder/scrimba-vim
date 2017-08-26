@@ -32,6 +32,9 @@ var server = http.createServer(function(request, response) {
     case "cursor":
       broadcast(pieces[1] + ":" + pieces[2] + ":" + pieces[3]);
       break;
+    case "fileChanged":
+      broadcast(pieces[1] + ":" + pieces[2]);
+      break;
     case "reload":
 
       let file = "";
