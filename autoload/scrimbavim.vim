@@ -22,13 +22,13 @@ function! scrimbavim#EvaluateWord()
 endfunction
 
 function! scrimbavim#evaluateJS(js)
-  python urllib2.urlopen(urllib2.Request(vim.eval("g:bl_serverpath") + "/evaluate", vim.eval("a:js")))
+  python urllib2.urlopen(urllib2.Request(vim.eval("g:scrimba_serverpath") + "/evaluate", vim.eval("a:js")))
 endfunction
 
 function! scrimbavim#sendCommand(command)
   python <<EOF
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + vim.eval("a:command")).read()
+  urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + vim.eval("a:command")).read()
 except:
   vim.command("call scrimbavim#startscrimbavim()")
 EOF
@@ -49,15 +49,15 @@ endfunction
 function! scrimbavim#getConsole()
   normal ggdG
 python <<EOF
-data = urllib2.urlopen(vim.eval("g:bl_serverpath") + "/console").read()
+data = urllib2.urlopen(vim.eval("g:scrimb_serverpath") + "/console").read()
 for line in data.split("\n"):
   vim.current.buffer.append(line)
 EOF
   setlocal nomodified
-  nnoremap <buffer> i :BLEval
-  nnoremap <buffer> cc :BLConsoleClear<cr>:e<cr>
+  nnoremap <buffer> i :scrimbaEval
+  nnoremap <buffer> cc :scrimbaConsoleClear<cr>:e<cr>
   nnoremap <buffer> r :e!<cr>
-  nnoremap <buffer> <cr> :BLTraceLine<cr>
+  nnoremap <buffer> <cr> :scrimbaTraceLine<cr>
 endfunction
 
 function! scrimbavim#url2path(url)
@@ -72,10 +72,10 @@ function! scrimbavim#url2path(url)
     return strpart(path,7)
   endif
   " for everything else, look up user-defined mappings
-  if exists("g:bl_urlpaths")
-    for key in keys(g:bl_urlpaths)
+  if exists("g:scrimba_urlpaths")
+    for key in keys(g:scrimba_urlpaths)
       if stridx(path, key) == 0
-        return g:bl_urlpaths[key] . strpart(path, strlen(key))
+        return g:scrimba_urlpaths[key] . strpart(path, strlen(key))
       endif
     endfor
   endif
@@ -84,7 +84,7 @@ endfunction
 
 function! scrimbavim#getErrors()
 python <<EOF
-data = urllib2.urlopen(vim.eval("g:bl_serverpath") + "/errors").readlines()
+data = urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/errors").readlines()
 vim.command("let errors = %s" % [e.strip() for e in data])
 EOF
   set errorformat+=%f:%l:%m
@@ -102,7 +102,7 @@ endfunction
 
 function! scrimbavim#clearErrors()
 python <<EOF
-urllib2.urlopen(vim.eval("g:bl_serverpath") + "/clearerrors")
+urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/clearerrors")
 EOF
 endfunction
 
@@ -136,7 +136,7 @@ python <<EOF
 line = vim.eval("line('.')")
 col  = vim.eval("col('.')")
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "cursor/" + line + "/" + col).read()
+  urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "cursor/" + line + "/" + col).read()
 except:
   vim.command("call scrimbavim#startscrimbavim()")
 EOF
@@ -148,7 +148,7 @@ if exists("g:scrimba_active")
 python <<EOF
 name = vim.eval("expand('%:t')")
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "fileChanged/" + name).read()
+  urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "fileChanged/" + name).read()
 except:
   vim.command("call scrimbavim#startscrimbavim()")
 EOF
@@ -161,7 +161,7 @@ python <<EOF
 name = vim.eval("expand('%:t')")
 pth  = vim.eval("expand('%:p:h')");
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "reload/" + name + "/" + pth).read()
+  urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "reload/" + name + "/" + pth).read()
 except:
   vim.command("call scrimbavim#startscrimbavim()")
 EOF
@@ -175,7 +175,7 @@ endif
 python <<EOF
 pth = vim.eval("expand('%:p:h')");
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "download" + "/" + pth).read()
+  urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "download" + "/" + pth).read()
 except:
   vim.command("call scrimbavim#startscrimbavim()")
 EOF
@@ -183,4 +183,5 @@ endfunction
 
 function! scrimbavim#start()
   let g:scrimba_active=1
+  call scrimbavim#startscrimbavim()
 endfunction
