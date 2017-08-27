@@ -39,8 +39,19 @@ scrimba_vim_loaded = true;
     STR.buffer()._buffer = merge(bu, k);
     STR.buffer().emit("add");
 
-    var head = [ 147, 100, 167, 99, 101, 77, 66, 114, 99, 98, 205
-               , Math.floor(oldL/256), oldL%256];
+    // Static header
+    let head = [147, 100, 167];
+
+    // Current key
+    let id   = STR.id();
+    for (let i = 0; i < id.length; i++)
+      head.push(id.charCodeAt(i));
+
+    // Content length
+    head.push(205);
+    head.push(Math.floor(oldL/256));
+    head.push(oldL%256);
+
     var q = merge(head, k);
     STR.api()._socket.send(q, {
       byteEnd: STR._buffer.len()+k.length
