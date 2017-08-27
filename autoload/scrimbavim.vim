@@ -9,44 +9,44 @@ import os
 import subprocess
 NOMAS
 
-function! browserlink#EvaluateSelection()
-  call browserlink#evaluateJS(browserlink#get_visual_selection())
+function! scrimbavim#EvaluateSelection()
+  call scrimbavim#evaluateJS(scrimbavim#get_visual_selection())
 endfunction
 
-function! browserlink#EvaluateBuffer()
-  call browserlink#evaluateJS(join(getline(1,'$')," "))
+function! scrimbavim#EvaluateBuffer()
+  call scrimbavim#evaluateJS(join(getline(1,'$')," "))
 endfunction
 
-function! browserlink#EvaluateWord()
-  call browserlink#evaluateJS(expand("<cword>") . "()")
+function! scrimbavim#EvaluateWord()
+  call scrimbavim#evaluateJS(expand("<cword>") . "()")
 endfunction
 
-function! browserlink#evaluateJS(js)
+function! scrimbavim#evaluateJS(js)
   python urllib2.urlopen(urllib2.Request(vim.eval("g:bl_serverpath") + "/evaluate", vim.eval("a:js")))
 endfunction
 
-function! browserlink#sendCommand(command)
+function! scrimbavim#sendCommand(command)
   python <<EOF
 try:
   urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + vim.eval("a:command")).read()
 except:
-  vim.command("call browserlink#startBrowserlink()")
+  vim.command("call scrimbavim#startscrimbavim()")
 EOF
 endfunction
 
-function! browserlink#startBrowserlink()
+function! scrimbavim#startscrimbavim()
   if has("win32")
-    execute 'cd' fnameescape(s:path . "/browserlink")
+    execute 'cd' fnameescape(s:path . "/scrimbavim")
     call system("./start.bat")
     execute 'cd -'
   else
-    execute 'cd' fnameescape(s:path . "/browserlink")
-    call system("node browserlink.js &")
+    execute 'cd' fnameescape(s:path . "/scrimbavim")
+    call system("node scrimbavim.js &")
     execute 'cd -'
   endif
 endfunction
 
-function! browserlink#getConsole()
+function! scrimbavim#getConsole()
   normal ggdG
 python <<EOF
 data = urllib2.urlopen(vim.eval("g:bl_serverpath") + "/console").read()
@@ -60,7 +60,7 @@ EOF
   nnoremap <buffer> <cr> :BLTraceLine<cr>
 endfunction
 
-function! browserlink#url2path(url)
+function! scrimbavim#url2path(url)
   let path = a:url
   " strip off any fragment identifiers
   let hashIdx = stridx(a:url, '#')
@@ -82,7 +82,7 @@ function! browserlink#url2path(url)
   return path
 endfunction
 
-function! browserlink#getErrors()
+function! scrimbavim#getErrors()
 python <<EOF
 data = urllib2.urlopen(vim.eval("g:bl_serverpath") + "/errors").readlines()
 vim.command("let errors = %s" % [e.strip() for e in data])
@@ -95,18 +95,18 @@ EOF
     if error.multiplicity > 1
       let msg = msg . ' (' . error.multiplicity . ' times)'
     endif
-    let qfitems = qfitems + [browserlink#url2path(error.url) . ':' . error.lineNumber . ':' . msg]
+    let qfitems = qfitems + [scrimbavim#url2path(error.url) . ':' . error.lineNumber . ':' . msg]
   endfor
   cexpr join(qfitems, "\n")
 endfunction
 
-function! browserlink#clearErrors()
+function! scrimbavim#clearErrors()
 python <<EOF
 urllib2.urlopen(vim.eval("g:bl_serverpath") + "/clearerrors")
 EOF
 endfunction
 
-function! browserlink#traceLine()
+function! scrimbavim#traceLine()
 python <<EOF
 
 line = vim.eval("getline('.')")
@@ -119,7 +119,7 @@ vim.command(":" + line)
 EOF
 endfunction
 
-function! browserlink#get_visual_selection()
+function! scrimbavim#get_visual_selection()
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
   let lines = getline(lnum1, lnum2)
@@ -128,7 +128,7 @@ function! browserlink#get_visual_selection()
   return join(lines, " ")
 endfunction
 
-function! browserlink#sendCursor()
+function! scrimbavim#sendCursor()
 python <<EOF
 line = vim.eval("line('.')")
 col  = vim.eval("col('.')")
@@ -139,7 +139,7 @@ except:
 EOF
 endfunction
 
-function! browserlink#fileChanged()
+function! scrimbavim#fileChanged()
 python <<EOF
 name = vim.eval("expand('%:t')")
 try:
@@ -149,7 +149,7 @@ except:
 EOF
 endfunction
 
-function! browserlink#reloadGeneric()
+function! scrimbavim#reloadGeneric()
 python <<EOF
 name = vim.eval("expand('%:t')")
 pth  = vim.eval("expand('%:p:h')");
@@ -160,7 +160,7 @@ except:
 EOF
 endfunction
 
-function! browserlink#download()
+function! scrimbavim#download()
 python <<EOF
 pth = vim.eval("expand('%:p:h')");
 try:

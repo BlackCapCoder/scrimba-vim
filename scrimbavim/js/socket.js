@@ -155,7 +155,7 @@
 
   var filesObj = {};
   function download (file=1) {
-    if (file<getFiles.length+1) {
+    if (file<getFiles().length+1) {
       setFile(file);
       setTimeout ( _ => {
         filesObj[nameFromIndex(file)] = SE.getValue();

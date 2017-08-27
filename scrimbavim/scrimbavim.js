@@ -1,12 +1,12 @@
 #!/usr/bin/nodejs
-// Browserlink.js
-// The server for browserlink.vim
+// scrimbavim.js
+// The server for scrimbavim.vim
 // By Jonathan Warner, 2015
-// http://github.com/jaxbot/browserlink.vim
+// http://github.com/jaxbot/scrimbavim.vim
 
 var VERSION = "2.6.0";
 
-console.log("Browserlink");
+console.log("scrimbavim");
 console.log("Server version: " + VERSION);
 console.log("======================");
 console.log("Dedicated to everyone who missed the first chest in OOT's Forest Temple");
@@ -93,7 +93,7 @@ var server = http.createServer(function(request, response) {
   }
 
   response.writeHead(200);
-  response.end("Browserlink " + VERSION);
+  response.end("scrimbavim " + VERSION);
 
 });
 
