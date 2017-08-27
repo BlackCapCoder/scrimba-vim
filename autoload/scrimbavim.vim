@@ -184,4 +184,5 @@ endfunction
 function! scrimbavim#start()
   let g:scrimba_active=1
   call scrimbavim#startscrimbavim()
+  vim.command("call scrimbavim#startscrimbavim()")
 endfunction
