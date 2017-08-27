@@ -3,6 +3,7 @@ let s:path = expand('<sfile>:p:h:h')
 python <<NOMAS
 import sys
 import time
+import urllib
 import urllib2
 import vim
 import os
@@ -160,7 +161,7 @@ if exists("g:scrimba_active")
 python <<EOF
 name = vim.eval("expand('%:t')")
 # pth  = vim.eval("expand('%:p:h')")
-txt  = vim.eval("join(getline(1,'$'), '\n')")
+txt  = urllib.pathname2url(vim.eval("join(getline(1,'$'), '\n')"))
 try:
   # urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "reload/" + name + "/" + pth).read()
   urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "reload/" + name + "/" + txt).read()
