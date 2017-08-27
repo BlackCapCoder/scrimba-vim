@@ -1,7 +1,7 @@
 /* Injected into the webpage we're linking to 
  * I recommend using GreaseMonkey or something similar to automatically inject,
  * but you can also just do something like:
- * <script src='http://127.0.0.1:9001/js/socket.js'></script>
+ * <script src='http://127.0.0.1:9002/js/socket.js'></script>
  */
 
 (function () {
@@ -148,14 +148,14 @@
   // ================ Mostly copied from browser-link vim: ===============
 
   // Change port/address if needed 
-  var socket = new WebSocket("ws://127.0.0.1:9001/");
+  var socket = new WebSocket("ws://127.0.0.1:9002/");
 
   nameFromIndex = ix => getFiles()[ix-1];
   nameToIndex = name => getFiles().indexOf(name)+1;
 
   var filesObj = {};
   function download (file=1) {
-    if (file<4) {
+    if (file<getFiles.length+1) {
       setFile(file);
       setTimeout ( _ => {
         filesObj[nameFromIndex(file)] = SE.getValue();

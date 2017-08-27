@@ -9,6 +9,6 @@
 // ==/UserScript==
 
 var src = document.createElement("script");
-src.src = "http://127.0.0.1:9001/js/socket.js";
+src.src = "http://127.0.0.1:9002/js/socket.js";
 src.async = true;
 document.head.appendChild(src);

@@ -10,7 +10,7 @@
 "
 
 if !exists("g:bl_serverpath")
-  let g:bl_serverpath = "http://127.0.0.1:9001"
+  let g:bl_serverpath = "http://127.0.0.1:9002"
 endif
 
 if !exists("g:bl_pagefiletypes")
