@@ -7,6 +7,17 @@
 (function () {
   console.log("Hello from scrimba-vim");
 
+  let files = [];
+  getFiles = function getFiles () {
+    if (files.length > 0) return files;
+
+    let els = document.querySelectorAll('.PaneTab.file > .title');
+    let ts  = [];
+    for (let i = 0; i < els.length; i++)
+      ts.push(els[i].innerText.toLowerCase());
+    return files=ts;
+  }
+
   getSel = function getSel () {
     return Imba.TagManager._mounted[2]._preview._file._selState;
   }
@@ -134,32 +145,27 @@
   }
 
 
-
-
   // ================ Mostly copied from browser-link vim: ===============
 
   // Change port/address if needed 
   var socket = new WebSocket("ws://127.0.0.1:9001/");
 
-  function nameFromIndex (ix) {
-    if (ix == 1) return "index.html";
-    if (ix == 2) return "index.css";
-    if (ix == 3) return "index.js";
-  }
+  nameFromIndex = ix => getFiles()[ix-1];
+  nameToIndex = name => getFiles().indexOf(name)+1;
 
-  var files = {};
+  var filesObj = {};
   function download (file=1) {
     if (file<4) {
       setFile(file);
       setTimeout ( _ => {
-        files[nameFromIndex(file)] = SE.getValue();
+        filesObj[nameFromIndex(file)] = SE.getValue();
         download(file+1);
       }, 50);
     } else {
-      files['msg'] = 'download';
-      let payload = JSON.stringify(files);
+      filesObj['msg'] = 'download';
+      let payload = JSON.stringify(filesObj);
       socket.send(payload);
-      files = {};
+      filesObj = {};
     }
   }
 
@@ -214,6 +220,14 @@
     let data = evt.data.substring(ix+1);
     if (ix == -1) type = evt.data;
 
+    let fileIx = nameToIndex(type);
+    if (fileIx !== 0) {
+      __replace(data, fileIx);
+      setCur(lastCur.column, lastCur.lineNumber, fileIx); // SE.setPosition(lastCur);
+      lastFile = fileIx
+      return;
+    }
+
     switch (type) {
       case "cursor":
         let pieces = data.split(':');
@@ -230,79 +244,9 @@
       case "download":
         download();
         break;
-      case "index.html":
-        __replace(data,1); // SE.setValue(data);
-        setCur(lastCur.column, lastCur.lineNumber, 1); // SE.setPosition(lastCur);
-        lastFile = 1;
-        break;
-      case "index.css":
-        __replace(data,2);
-        setCur(lastCur.column, lastCur.lineNumber, 2);
-        lastFile = 2;
-        break;
-      case "index.js":
-        __replace(data,3);
-        setCur(lastCur.column, lastCur.lineNumber, 3);
-        lastFile = 3;
-        break;
       default:
         break;
     }
   };
-  socket.onerror = function(evt) { console.log(evt); };
 
-  var reloadCSS = function () {
-    var elements = document.getElementsByTagName("link");
-
-    var c = 0;
-
-    for (var i = 0; i < elements.length; i++) {
-      if (elements[c].rel == "stylesheet") {
-        var href = elements[i].getAttribute("data-href");
-
-        if (href == null) {
-          href = elements[c].href;
-          elements[c].setAttribute("data-href", href);
-        }
-
-        if (window.__BL_OVERRIDE_CACHE) {
-          var link = document.createElement("link");
-          link.href = href;
-          link.rel = "stylesheet";
-          document.head.appendChild(link);
-
-          document.head.removeChild(elements[c]);
-
-          continue;
-        }
-        elements[i].href = href + ((href.indexOf("?") == -1) ? "?" : "&") + "c=" + (new Date).getTime();
-      }
-      c++;
-    }
-  }
-
-  // if (!window.__BL_NO_CONSOLE_OVERRIDE) {
-  //   var log = console.log;
-  //   console.log = function(str) {
-  //     log.call(console, str);
-  //     var err = (new Error).stack;
-  //     err = err.replace("Error", "").replace(/\s+at\s/g, '@').replace(/@/g, "\n@");
-  //     socket.send(JSON.stringify({
-  //       "type"       : "log",
-  //       "message"    : str,
-  //       "stacktrace" : err
-  //     }));
-  //   }
-  // }
-
-  window.onerror = function(msg, url, lineNumber) {
-    socket.send(JSON.stringify({
-      "type"       : "error",
-      "message"    : msg,
-      "url"        : url,
-      "lineNumber" : lineNumber
-    }));
-    return false;
-  }
 })();
-

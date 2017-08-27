@@ -47,9 +47,6 @@ function! s:autoReload()
 endfunction
 
 function! s:setupHandlers()
-  au BufWritePost * call s:autoReload()
-  au BufWritePost index.css :BLReloadCSS
-
   au CursorMoved index.html call browserlink#sendCursor()
   au CursorMoved index.css call browserlink#sendCursor()
   au CursorMoved index.js call browserlink#sendCursor()
@@ -58,9 +55,11 @@ function! s:setupHandlers()
   au BufRead index.css call browserlink#fileChanged()
   au BufRead index.js call browserlink#fileChanged()
 
-  au InsertLeave index.html w|call s:autoReload()
-  au InsertLeave index.css w|:BLReloadCSS
-  au InsertLeave index.js w|call s:autoReload()
+  au InsertLeave index.html w|call browserlink#reloadGeneric()
+  au InsertLeave index.css w|call browserlink#reloadGeneric()
+  au InsertLeave index.js w|call browserlink#reloadGeneric()
+
+  au BufWritePost * call browserlink#reloadGeneric()
 endfunction
 
 if !exists("g:bl_no_autoupdate")

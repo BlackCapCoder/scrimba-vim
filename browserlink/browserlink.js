@@ -42,11 +42,11 @@ var server = http.createServer(function(request, response) {
       broadcast("download");
       break;
     case "reload":
-
       let file = "";
-      if (pieces[2] == "page") file = "index.html";
-      if (pieces[2] == "css" ) file = "index.css";
-      if (pieces[2] == "js"  ) file = "index.js";
+      // if (pieces[2] == "page") file = "index.html";
+      // if (pieces[2] == "css" ) file = "index.css";
+      // if (pieces[2] == "js"  ) file = "index.js";
+      file = pieces[2];
 
       let pth = "/home/blackcap/school/25.08/tst/";
 

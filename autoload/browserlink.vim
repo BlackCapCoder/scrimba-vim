@@ -149,6 +149,16 @@ except:
 EOF
 endfunction
 
+function! browserlink#reloadGeneric()
+python <<EOF
+name = vim.eval("expand('%:t')")
+try:
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "reload/" + name).read()
+except:
+  pass
+EOF
+endfunction
+
 function! browserlink#download()
 python <<EOF
 pth = vim.eval("expand('%:p:h')");
