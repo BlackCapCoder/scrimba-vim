@@ -48,7 +48,7 @@ var server = http.createServer(function(request, response) {
       // if (pieces[2] == "js"  ) file = "index.js";
       file = pieces[2];
 
-      let pth = "/home/blackcap/school/25.08/tst/";
+      let pth = pieces.slice(3).join('/');
 
       fs.readFile(path.resolve(pth, file), "utf8", function(err, data) {
         if (err) { console.log(err); }

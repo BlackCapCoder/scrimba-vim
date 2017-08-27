@@ -152,8 +152,9 @@ endfunction
 function! browserlink#reloadGeneric()
 python <<EOF
 name = vim.eval("expand('%:t')")
+pth  = vim.eval("expand('%:p:h')");
 try:
-  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "reload/" + name).read()
+  urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "reload/" + name + "/" + pth).read()
 except:
   pass
 EOF
