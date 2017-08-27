@@ -128,7 +128,10 @@ function! scrimbavim#get_visual_selection()
   return join(lines, " ")
 endfunction
 
+" --------------------------
+
 function! scrimbavim#sendCursor()
+if exists("g:scrimba_active")
 python <<EOF
 line = vim.eval("line('.')")
 col  = vim.eval("col('.')")
@@ -137,9 +140,11 @@ try:
 except:
   pass
 EOF
+endif
 endfunction
 
 function! scrimbavim#fileChanged()
+if exists("g:scrimba_active")
 python <<EOF
 name = vim.eval("expand('%:t')")
 try:
@@ -147,9 +152,11 @@ try:
 except:
   pass
 EOF
+endif
 endfunction
 
 function! scrimbavim#reloadGeneric()
+if exists("g:scrimba_active")
 python <<EOF
 name = vim.eval("expand('%:t')")
 pth  = vim.eval("expand('%:p:h')");
@@ -158,9 +165,13 @@ try:
 except:
   pass
 EOF
+endif
 endfunction
 
 function! scrimbavim#download()
+if !exists("g:scrimba_active")
+  call scrimbavim#start()
+endif
 python <<EOF
 pth = vim.eval("expand('%:p:h')");
 try:
@@ -168,4 +179,8 @@ try:
 except:
   pass
 EOF
+endfunction
+
+function! scrimbavim#start()
+  let g:scrimba_active=1
 endfunction
