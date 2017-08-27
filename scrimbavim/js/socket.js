@@ -4,6 +4,8 @@
  * <script src='http://127.0.0.1:9002/js/socket.js'></script>
  */
 
+scrimba_vim_loaded = true;
+
 (function () {
   console.log("Hello from scrimba-vim");
 

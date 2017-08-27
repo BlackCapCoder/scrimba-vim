@@ -8,7 +8,28 @@
 // @grant        none
 // ==/UserScript==
 
-var src = document.createElement("script");
-src.src = "http://127.0.0.1:9002/js/socket.js";
-src.async = true;
-document.head.appendChild(src);
+(function () {
+    function loadScript () {
+        let src = document.createElement("script");
+        src.src = "http://127.0.0.1:9002/js/socket.js";
+        src.async = true;
+        document.head.appendChild(src);
+        return src;
+    }
+
+    let lastScript = undefined;
+    scrimba_vim_loaded = false;
+    console.log("trying to connect to vim..");
+
+    function reload () {
+        if (scrimba_vim_loaded) return;
+        if (lastScript !== undefined) {
+            document.head.removeChild(lastScript);
+        }
+
+        lastScript = loadScript();
+        setTimeout(reload, 500);
+    }
+
+    reload();
+})();
