@@ -271,3 +271,10 @@ scrimba_vim_loaded = true;
   };
 
 })();
+
+
+// I'll leave the spy here for convenience
+function installSpy () {
+  let oldsend = STR.api()._socket.send
+  STR.api()._socket.send = function (...args) { console.log(args[0]); return oldsend.apply(args); }
+}
