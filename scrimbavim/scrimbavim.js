@@ -48,13 +48,15 @@ var server = http.createServer(function(request, response) {
       // if (pieces[2] == "js"  ) file = "index.js";
       file = pieces[2];
 
-      let pth = pieces.slice(3).join('/');
+      // let pth = pieces.slice(3).join('/');
+      let txt = pieces.slice(3).join('/');
 
-      fs.readFile(path.resolve(pth, file), "utf8", function(err, data) {
-        if (err) { console.log(err); }
-        broadcast(file + ":" + data);
-      });
+      // fs.readFile(path.resolve(pth, file), "utf8", function(err, data) {
+      //   if (err) { console.log(err); }
+      //   broadcast(file + ":" + data);
+      // });
 
+      broadcast (file + ":" + txt);
       // broadcast(pieces[2]);
       break;
     case "evaluate":

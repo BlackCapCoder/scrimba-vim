@@ -33,7 +33,18 @@ scrimba_vim_loaded = true;
     return q;
   }
 
+  let isUpdating    = false;
+  let updatePending = false;
+  let targetUpdate  = [];
   pushBuff = function pushBuff (k) {
+    if (updatePending) return;
+    if (isUpdating) {
+      updatePending = true;
+      targetUpdate = targetUpdate.concat(k);
+      return;
+    }
+    targetUpdate = [];
+
     let oldL = STR._buffer.len();
     let bu = STR.buffer()._buffer;
     STR.buffer()._buffer = merge(bu, k);
@@ -55,7 +66,13 @@ scrimba_vim_loaded = true;
     var q = merge(head, k);
     STR.api()._socket.send(q, {
       byteEnd: STR._buffer.len()+k.length
-    , handler: (_ => {console.log("unhandled")})
+      , handler: (_ => {
+          isUpdating = false;
+          if (updatePending) {
+            updatePending = false;
+            pushBuff(targetUpdate);
+          }
+      })
     });
   }
 

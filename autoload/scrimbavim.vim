@@ -159,9 +159,11 @@ function! scrimbavim#reloadGeneric()
 if exists("g:scrimba_active")
 python <<EOF
 name = vim.eval("expand('%:t')")
-pth  = vim.eval("expand('%:p:h')");
+# pth  = vim.eval("expand('%:p:h')")
+txt  = vim.eval("join(getline(1,'$'), '\n')")
 try:
-  urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "reload/" + name + "/" + pth).read()
+  # urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "reload/" + name + "/" + pth).read()
+  urllib2.urlopen(vim.eval("g:scrimba_serverpath") + "/" + "reload/" + name + "/" + txt).read()
 except:
   vim.command("call scrimbavim#startscrimbavim()")
 EOF
