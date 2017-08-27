@@ -47,17 +47,24 @@ function! s:setupHandlers()
   au CursorMoved index.html call scrimbavim#sendCursor()
   au CursorMoved index.css call scrimbavim#sendCursor()
   au CursorMoved index.js call scrimbavim#sendCursor()
+  au CursorMoved style.css call scrimbavim#sendCursor()
 
   au BufRead index.html call scrimbavim#fileChanged()
   au BufRead index.css call scrimbavim#fileChanged()
+  au BufRead style.css call scrimbavim#fileChanged()
   au BufRead index.js call scrimbavim#fileChanged()
 
-  au InsertLeave index.html w|call scrimbavim#reloadGeneric()
-  au InsertLeave index.css w|call scrimbavim#reloadGeneric()
-  au InsertLeave style.css w|call scrimbavim#reloadGeneric()
-  au InsertLeave index.js w|call scrimbavim#reloadGeneric()
-
   au BufWritePost * call scrimbavim#reloadGeneric()
+
+  au TextChanged index.html w|call scrimbavim#reloadGeneric()
+  au TextChanged index.css w|call scrimbavim#reloadGeneric()
+  au TextChanged style.css w|call scrimbavim#reloadGeneric()
+  au TextChanged index.js w|call scrimbavim#reloadGeneric()
+
+  au TextChangedI index.html w|call scrimbavim#reloadGeneric()
+  au TextChangedI index.css w|call scrimbavim#reloadGeneric()
+  au TextChangedI style.css w|call scrimbavim#reloadGeneric()
+  au TextChangedI index.js w|call scrimbavim#reloadGeneric()
 endfunction
 
 if !exists("g:scrimba_no_autoupdate")
