@@ -56,15 +56,15 @@ function! s:setupHandlers()
 
   au BufWritePost * call scrimbavim#reloadGeneric()
 
-  au TextChanged index.html w|call scrimbavim#reloadGeneric()
-  au TextChanged index.css w|call scrimbavim#reloadGeneric()
-  au TextChanged style.css w|call scrimbavim#reloadGeneric()
-  au TextChanged index.js w|call scrimbavim#reloadGeneric()
+  au TextChanged index.html call scrimbavim#reloadGeneric()
+  au TextChanged index.css call scrimbavim#reloadGeneric()
+  au TextChanged style.css call scrimbavim#reloadGeneric()
+  au TextChanged index.js call scrimbavim#reloadGeneric()
 
-  au TextChangedI index.html w|call scrimbavim#reloadGeneric()
-  au TextChangedI index.css w|call scrimbavim#reloadGeneric()
-  au TextChangedI style.css w|call scrimbavim#reloadGeneric()
-  au TextChangedI index.js w|call scrimbavim#reloadGeneric()
+  au TextChangedI index.html call scrimbavim#reloadGeneric()
+  au TextChangedI index.css call scrimbavim#reloadGeneric()
+  au TextChangedI style.css call scrimbavim#reloadGeneric()
+  au TextChangedI index.js call scrimbavim#reloadGeneric()
 endfunction
 
 if !exists("g:scrimba_no_autoupdate")

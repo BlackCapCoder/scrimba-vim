@@ -49,7 +49,7 @@ var server = http.createServer(function(request, response) {
       file = pieces[2];
 
       // let pth = pieces.slice(3).join('/');
-      let txt = pieces.slice(3).join('/');
+      let txt = decodeURIComponent(pieces.slice(3).join('/'));
 
       // fs.readFile(path.resolve(pth, file), "utf8", function(err, data) {
       //   if (err) { console.log(err); }
