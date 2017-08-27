@@ -138,7 +138,7 @@ col  = vim.eval("col('.')")
 try:
   urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "cursor/" + line + "/" + col).read()
 except:
-  pass
+  vim.command("call scrimbavim#startscrimbavim()")
 EOF
 endif
 endfunction
@@ -150,7 +150,7 @@ name = vim.eval("expand('%:t')")
 try:
   urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "fileChanged/" + name).read()
 except:
-  pass
+  vim.command("call scrimbavim#startscrimbavim()")
 EOF
 endif
 endfunction
@@ -163,7 +163,7 @@ pth  = vim.eval("expand('%:p:h')");
 try:
   urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "reload/" + name + "/" + pth).read()
 except:
-  pass
+  vim.command("call scrimbavim#startscrimbavim()")
 EOF
 endif
 endfunction
@@ -177,7 +177,7 @@ pth = vim.eval("expand('%:p:h')");
 try:
   urllib2.urlopen(vim.eval("g:bl_serverpath") + "/" + "download" + "/" + pth).read()
 except:
-  pass
+  vim.command("call scrimbavim#startscrimbavim()")
 EOF
 endfunction
 
