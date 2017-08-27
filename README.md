@@ -6,7 +6,7 @@ Control [Scrimba](https://scrimba.com/) with Vim!
 
 Create a new (or open an existing) project in Scrimba. Fire up Vim and run `:ScrimbaDownload` to download all the files in the project to the current directory. Any changes you make to these files will be synced with Scrimba.
 
-If you already have the files, closed Vim, and are not reconnected for some reason, you can connect to Scrimba with `:ScrimbaStart`
+If you already have the files, and closed Vim for some reason, you can connect to Scrimba with `:ScrimbaStart`
 
 You can see video of it in action [here](https://youtu.be/DUdi2Ou4YRc)
 

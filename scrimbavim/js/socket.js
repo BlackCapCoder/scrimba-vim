@@ -34,8 +34,18 @@ scrimba_vim_loaded = true;
   }
 
   pushBuff = function pushBuff (k) {
+    let oldL = STR._buffer.len();
     let bu = STR.buffer()._buffer;
     STR.buffer()._buffer = merge(bu, k);
+    STR.buffer().emit("add");
+
+    var head = [ 147, 100, 167, 99, 101, 77, 66, 114, 99, 98, 205
+               , Math.floor(oldL/256), oldL%256];
+    var q = merge(head, k);
+    STR.api()._socket.send(q, {
+      byteEnd: STR._buffer.len()+k.length
+    , handler: (_ => {console.log("unhandled")})
+    });
   }
 
   selectAll = function selectAll (cols, lines) {
@@ -235,13 +245,11 @@ scrimba_vim_loaded = true;
         let pieces = data.split(':');
         lastCur.lineNumber = Number(pieces[0])
         lastCur.column     = Number(pieces[1])
-        // SE.setPosition(lastCur);
-        setCur(lastCur.column, lastCur.lineNumber, lastFile);
+        setCur(lastCur.column, lastCur.lineNumber, lastFile); // SE.setPosition(lastCur);
         break;
       case "fileChanged":
-        if (data == "index.html") setFile (1);
-        if (data == "index.css")  setFile (2);
-        if (data == "index.js")   setFile (3);
+        lastFile = nameToIndex(data);
+        setFile (lastFile);
         break;
       case "download":
         download();

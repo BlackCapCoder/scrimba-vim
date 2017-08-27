@@ -54,6 +54,7 @@ function! s:setupHandlers()
 
   au InsertLeave index.html w|call scrimbavim#reloadGeneric()
   au InsertLeave index.css w|call scrimbavim#reloadGeneric()
+  au InsertLeave style.css w|call scrimbavim#reloadGeneric()
   au InsertLeave index.js w|call scrimbavim#reloadGeneric()
 
   au BufWritePost * call scrimbavim#reloadGeneric()
