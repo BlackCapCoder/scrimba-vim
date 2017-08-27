@@ -4,7 +4,7 @@ Control [Scrimba](https://scrimba.com/) with Vim!
 
 ### Usage
 
-Create a new (or open an existing) project in Scrimba. Fire up Vim and run `:call browserlink#download()` to download all the files in the project to the current directory. Any changes you make to these files will be synced with Scrimba.
+Create a new (or open an existing) project in Scrimba. Fire up Vim and run `:call scrimbavim#download()` to download all the files in the project to the current directory. Any changes you make to these files will be synced with Scrimba.
 
 You can see video of it in action [here](https://youtu.be/DUdi2Ou4YRc)
 
