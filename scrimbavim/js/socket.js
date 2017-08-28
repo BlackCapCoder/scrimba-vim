@@ -86,11 +86,13 @@ scrimba_vim_loaded = true;
 
   replaceText = function replaceText (oldCols, oldLines, newCols, newLines, fileIndex, text,sc=1,sl=1) {
     let lst = [ 250,147,fileIndex,145,146
-              , 148  // multiple lines
-              , sc, sl // from beginning of file
-              , oldCols
-              , oldLines-1
+              , 148 // multiple lines
               ];
+
+    lst = lst.concat(lineCol(sc));
+    lst = lst.concat(lineCol(sl));
+    lst = lst.concat(lineCol(oldCols));
+    lst = lst.concat(lineCol(oldLines-1));
 
     let l = text.length;
     if (l < 32) {
@@ -109,8 +111,10 @@ scrimba_vim_loaded = true;
       lst.push(text.charCodeAt(i));
 
     lst.push(146);
-    lst.push(newLines);
-    lst.push(newCols);
+    lst = lst.concat(lineCol(newLines));
+    lst = lst.concat(lineCol(newCols));
+    // lst.push(newLines);
+    // lst.push(newCols);
 
     pushBuff(lst);
   }
@@ -126,14 +130,21 @@ scrimba_vim_loaded = true;
     replaceText(olc.cols, olc.lines, nlc.cols+1, nlc.lines, file, text);
   }
 
+  function lineCol (num) {
+    if (num < 128) return [num];
+    if (num < 256) return [ 204, num ];
+    return [ 205, Math.floor(num/256), num % 256 ];
+  }
+
   writeText = function writeText (txt, doInit=false, line=1, col=1, file=1) {
     var lst = [];
 
     if (doInit) {
-      lst = [ 252, 148, file, line, col
-            , 161, txt.charCodeAt(0)
-            // , 248, 146, 32, 2
-            ];
+      lst = [ 252, 148, file];
+      lst = lst.concat(lineCol(line));
+      lst = lst.concat(lineCol(col));
+      lst.push(161);
+      lst.push(txt.charCodeAt(0));
     }
 
     for (let i = doInit? 1:0; i < txt.length; i++) {
@@ -142,8 +153,10 @@ scrimba_vim_loaded = true;
       if (chr == 10) {
         lst.push(149);
         lst.push(file);
-        lst.push(line);
-        lst.push(col+1);
+        lst = lst.concat(lineCol(line));
+        lst = lst.concat(lineCol(col+1));
+        // lst.push(line);
+        // lst.push(col+1);
         line++; col = 0;
       }
 
@@ -153,8 +166,10 @@ scrimba_vim_loaded = true;
 
       if (chr == 10) {
         lst.push(146);
-        lst.push(line);
-        lst.push(col);
+        // lst.push(line);
+        // lst.push(col);
+        lst = lst.concat(lineCol(line));
+        lst = lst.concat(lineCol(col+1));
       }
     }
 
@@ -162,7 +177,10 @@ scrimba_vim_loaded = true;
   }
 
   setCur = function setCur (col, line, file=1) {
-    pushBuff([249, 147, file, line, col]);
+    var lst = [249, 147, file/*, line, col*/];
+    lst = lst.concat(lineCol(line));
+    lst = lst.concat(lineCol(col));
+    pushBuff(lst);
   }
 
   // I can't be bothered
