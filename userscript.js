@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://scrimba.com/casts/*
+// @match        https://scrimba.com/c/*
 // @grant        none
 // ==/UserScript==
 
